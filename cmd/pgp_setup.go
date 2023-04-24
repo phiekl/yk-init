@@ -45,11 +45,11 @@ func init() {
 	)
 	pgpSetupCmd.MarkFlagRequired("email")
 
-	pgpSetupCmd.Flags().Uint32P(
+	pgpSetupCmd.Flags().Int32P(
 		"lifetime",
 		"l",
-		0,
-		"pgp public key will expire after this many seconds (default: 1 year)",
+		-1,
+		"pgp public key will expire after this many seconds (default: 1 year) (0 = no expiry)",
 	)
 
 	pgpSetupCmd.Flags().StringP(
@@ -69,7 +69,7 @@ func generateRandomNumberString(min int, max int) string {
 type pgpSetupParam struct {
 	AdminPIN string
 	Email    string
-	Lifetime uint32
+	Lifetime int32
 	Name     string
 	UserPIN  string
 }
@@ -83,7 +83,7 @@ func (p *pgpSetupParam) validate() error {
 	if p.Email == "" {
 		return fmt.Errorf("--email must be set")
 	}
-	if p.Lifetime < 1 {
+	if p.Lifetime < 0 {
 		p.Lifetime = 31536000 // 1 year
 	}
 	if p.Name == "" {
@@ -122,7 +122,7 @@ func pgpSetup(cmd *cobra.Command, args []string) (err error) {
 	if err != nil {
 		return
 	}
-	param.Lifetime, err = cmd.Flags().GetUint32("lifetime")
+	param.Lifetime, err = cmd.Flags().GetInt32("lifetime")
 	if err != nil {
 		return
 	}
