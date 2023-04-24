@@ -106,6 +106,7 @@ type pgpSetupResultCard struct {
 type pgpSetupResultPGP struct {
 	Fingerprint string
 	PublicKey   string
+	Revocation  string
 }
 
 type pgpSetupResult struct {
@@ -168,6 +169,11 @@ func pgpSetup(cmd *cobra.Command, args []string) (err error) {
 		return err
 	}
 
+	revocation, err := pgp.GenerateRevocation(s, bundle.SigKey, bundle.SigMsg)
+	if err != nil {
+		return err
+	}
+
 	sshAuthorizedKey, err := pgp.MarshalSSHAuthorizedKey(bundle.AutMsg.PublicKey)
 	if err != nil {
 		return err
@@ -197,6 +203,7 @@ func pgpSetup(cmd *cobra.Command, args []string) (err error) {
 		PGP: &pgpSetupResultPGP{
 			Fingerprint: fmt.Sprintf("%X", bundle.SigKey.Fingerprint),
 			PublicKey:   bundle.Serialized.String(),
+			Revocation:  revocation.Serialized.String(),
 		},
 		SSH: sshAuthorizedKey,
 	}

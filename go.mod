@@ -6,7 +6,7 @@ module github.com/phiekl/yk-init
 
 go 1.17
 
-replace github.com/ProtonMail/go-crypto => github.com/phiekl/go-crypto v0.0.0-20220527193337-6f71a21c96ae
+replace github.com/ProtonMail/go-crypto => github.com/phiekl/go-crypto v0.0.0-20230424221414-2f2f51b22f46
 
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20220113124808-70ae35bab23f

@@ -55,6 +55,7 @@ To make the YubiKey work properly with gpg afterwards, run `gpg --import` to imp
 1. Sets the GPG cardholder name according to the given --name argument.
 1. Generates a random admin and user PIN (unless these are provided via the `ADMIN_PIN` and `USER_PIN` environment variables).
 1. Generates ed25519/cv25519 private PGP keys (on-device, they never leave the YubiKey) and the corresponding public keys.
+1. Generates a revocation certificate.
 1. Generates an SSH public key based on the AUT public key.
 1. Exports the attestation certificate (ATT).
 1. Generates and exports attestation statements for all key slots (AUT, DEC, SIG).
@@ -64,6 +65,7 @@ To make the YubiKey work properly with gpg afterwards, run `gpg --import` to imp
   - The generated admin and user PIN.
   - The fingerprint of the generated public key.
   - The serialized public key, ascii-armored.
+  - The serialized revocation certificate, ascii-armored.
   - The attestation certificate (ATT).
   - The attestation statement certificates for all the key slots (AUT, DEC, SIG).
   - The SSH pubic key meant for the authorized\_keys file.
@@ -72,6 +74,7 @@ The above is basically the same procedure as running the commands below, but wit
 
 ```
 gpg --card-edit # (admin => factory-reset, name, key-attr, generate)
+gpg --gen-revoke <keyid>
 gpg --export-ssh-key <keyid>
 ykman openpgp keys set-touch aut cached-fixed
 ykman openpgp keys set-touch enc cached-fixed
